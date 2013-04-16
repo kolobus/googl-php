@@ -81,6 +81,10 @@ class Googl
 	}
 
 	public function expand($url, $extended = false) {
+
+		# https
+		$url = str_replace("https","http", $url);
+
 		# Set cURL options
 		curl_setopt($this->ch, CURLOPT_HTTPGET, true);
 		curl_setopt($this->ch, CURLOPT_URL, $this->target.'shortUrl='.$url);
