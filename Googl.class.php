@@ -49,7 +49,7 @@ class Googl
 		curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
 	}
 
-	public function shorten($url, $extended = false) {
+	public function shorten($url, $extended = false, $https = false) {
 		
 		# Check buffer
 		if ( !$extended && !$this->extended && !empty(self::$buffer[$url]) ) {
@@ -66,12 +66,18 @@ class Googl
 		curl_setopt($this->ch, CURLOPT_HTTPHEADER, Array('Content-Type: application/json'));
 
 		if ( $extended || $this->extended) {
-			return json_decode(curl_exec($this->ch));
+			$ret = json_decode(curl_exec($this->ch));
 		} else {
 			$ret = json_decode(curl_exec($this->ch))->id;
+
+			if ( $https ) {
+				$ret = str_replace("http", "https", $ret);
+			}
+
 			self::$buffer[$url] = $ret;
-			return $ret;
 		}
+
+		return $ret;
 	}
 
 	public function expand($url, $extended = false) {
